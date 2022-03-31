@@ -5,14 +5,15 @@
 // get .env variable
 require("dotenv").config();
 // pull PORT and MONGODB_URL from .env
-const { PORT = 5000, MONGODB_URL } = process.env;
+const { PORT = 5000 } = process.env;
 // import express, mongoose, cors, morgan, multer
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 // const multer = require("multer");
-// const storage =
+const path = require("path");
+// importing route files
+const fileRoutes = require("./routes/carousel");
 var cloudinary = require("cloudinary").v2;
 
 // initialize app
@@ -21,16 +22,17 @@ const app = express();
 //================================
 //      Database Connection
 //================================
-// establish connection
-mongoose.connect(MONGODB_URL, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-});
-// connection Events
-mongoose.connection
-    .on("open", () => console.log("You are connected to mongoose"))
-    .on("close", () => console.log("You are disconnected to mongoose"))
-    .on("error", (error) => console.log(error));
+require("./utils/database")();
+// // establish connection
+// mongoose.connect(MONGODB_URL, {
+//     useUnifiedTopology: true,
+//     useNewUrlParser: true,
+// });
+// // connection Events
+// mongoose.connection
+//     .on("open", () => console.log("You are connected to mongoose"))
+//     .on("close", () => console.log("You are disconnected to mongoose"))
+//     .on("error", (error) => console.log(error));
 
 //================================
 //          Models
@@ -51,24 +53,11 @@ app.set("view engine", "ejs");
 
 //===========INDEX================
 
-app.get("/upload", async (req, res) => {
-    try {
-        res.render("upload");
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-
 //===========POST================
 
-app.post("/upload", async (req, res) => {
-    try {
-        res.send("Image Upload");
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+//
+app.use("/api", fileRoutes.routes);
 //================================
 //        Web-Listeners
 //================================
