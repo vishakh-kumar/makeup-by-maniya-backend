@@ -30,10 +30,6 @@ mongoose.connection
     .on("error", (error) => console.log(error));
 
 //================================
-//          Models
-//================================
-const Comment = require("./model/CommentSchema");
-//================================
 //          Middleware
 //================================
 app.use(cors()); //to prevent cors error when cross-origin requests are made
@@ -43,42 +39,9 @@ app.use(express.json()); //parse json bodies
 //================================
 //           Routes
 //================================
-app.get("/", (req, res) => {
-    res.send("Hello");
-});
 
-//===========POST/CREATE================
-app.post("/api/comment", async (req, res) => {
-    try {
-        res.json(await Comment.create(req.body));
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-//===========INDEX/READ================
-app.get("/api/comment", async (req, res) => {
-    try {
-        res.json(await Comment.find({}));
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-//===========UPDATE================
-app.post("/api/comment/:id", async (req, res) => {
-    try {
-        res.json(await Comment.findByIdAndUpdate(req.params.id, req.body));
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-//===========DELETE================
-app.delete("/api/comment/:id", async (req, res) => {
-    try {
-        res.json(await Comment.findByIdAndDelete(req.params.id));
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
+const commmentRouter = require("./routes/comment");
+app.use(commmentRouter);
 
 //================================
 //        Web-Listeners
