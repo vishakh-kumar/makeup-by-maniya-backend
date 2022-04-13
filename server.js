@@ -41,7 +41,8 @@ app.use(express.json()); //parse json bodies
 //================================
 
 const commmentRouter = require("./routes/comment");
-app.use(commmentRouter);
+const fileUploadRouter = require("./routes/fileUpload");
+app.use(commmentRouter, fileUploadRouter);
 
 //================================
 //        Web-Listeners
